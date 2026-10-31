@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALPHASTATES — Digital Solutions</title>
+  
+  <!-- Встроенный SVG-фавикон (черный фон, оранжевая A) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23030303'/%3E%3Ctext x='50' y='75' font-size='80' font-family='Arial, sans-serif' font-weight='bold' fill='%23ff3d00' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+
+  <!-- OPEN GRAPH МЕТА-ТЕГИ (Для красивых превью в Telegram) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ALPHASTATES — Digital Solutions" />
+  <meta property="og:description" content="Создаю цифровые продукты, которые не стыдно показать. Сайты с характером, Telegram Mini Apps и 3D." />
+  <!-- ВАЖНО: Замени ссылку на свою после деплоя, если нужно -->
+  <meta property="og:image" content="https://alphastatex.github.io/alpha-3d/images/og-cover.jpg" /> 
+  
+  <!-- Twitter Meta (для красивых карточек) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ALPHASTATES — Digital Solutions" />
+  <meta name="twitter:description" content="Сайты с характером, Telegram Mini Apps и 3D." />
+  <meta name="twitter:image" content="https://alphastatex.github.io/alpha-3d/images/og-cover.jpg" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="scroll-progress"></div>
+
+  <!-- Прелоадер -->
+  <div class="preloader">
+    <div class="preloader-counter">0%</div>
+  </div>
+
+  <!-- Кастомный курсор -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+  <div class="cursor-text">СМОТРЕТЬ</div>
+
+  <div id="canvas-container"></div>
+  
+  <!-- Шапка -->
+  <header class="nav">
+    <div class="logo">ALPHASTATES</div>
+    <nav class="nav-links">
+      <a href="#services" class="nav-link">Услуги</a>
+      <a href="#works" class="nav-link">Работы</a>
+      <a href="#contact" class="nav-link btn-contact magnetic">Связаться</a>
+    </nav>
+  </header>
+
+  <!-- HERO SECTION -->
+  <div class="content">
+    <h1 class="hero-title">
+      <span class="word"><span class="letter">A</span><span class="letter">L</span><span class="letter">P</span><span class="letter">H</span><span class="letter">A</span></span>
+      <span class="word"><span class="letter">S</span><span class="letter">T</span><span class="letter">A</span><span class="letter">T</span><span class="letter">E</span><span class="letter">S</span></span>
+    </h1>
+    <div class="subtitle-wrapper">
+      <p>Digital Solutions & Web Experiences</p>
+    </div>
+    <span class="hint">Кликни в любом месте</span>
+  </div>
+
+  <!-- ABOUT SECTION (СВЕТЛАЯ) -->
+  <section class="section-about grain" id="about">
+    <div class="noise"></div>
+    <div class="container about-grid">
+      <div class="about-image-wrapper hover-target">
+        <!-- Замени путь на свой, если файл называется иначе -->
+        <img class="about-image" src="/images/me.png" alt="Иван">
+      </div>
+      <div class="about-text">
+        <div class="title-mask">
+          <h2 class="section-title about-title">Привет.<br>Я Иван.</h2>
+        </div>
+        <div class="about-desc">
+          <p>Создаю цифровые продукты, которые не стыдно показать. Мой подход — это сочетание <span class="highlight">чистого кода</span>, современного дизайна и жесткого характера.</p>
+          <p>Без шаблонов. Без компромиссов. Только 3D, анимации и решения, которые приносят бизнесу деньги.</p>
+        </div>
+        <div class="skills">
+          <span>Vanilla JS</span>
+          <span>GSAP</span>
+          <span>Three.js</span>
+          <span>Cloudflare</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section class="section-2 grain" id="services">
+    <div class="noise"></div>
+    <div class="container">
+      <div class="title-mask">
+        <h2 class="section-title">Что я делаю</h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card hover-target">
+          <h3>Mini Apps</h3>
+          <p>Сложные Telegram-боты с WebApp интерфейсом, CRM-панелями и оплатой.</p>
+        </div>
+        <div class="service-card hover-target">
+          <h3>Websites</h3>
+          <p>Сайты с характером. Без шаблонов, с кастомной анимацией и 3D.</p>
+        </div>
+        <div class="service-card hover-target">
+          <h3>Backend</h3>
+          <p>Безопасные Cloudflare Workers с защитой от спама и валидацией.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO SECTION -->
+  <section class="section-3 grain" id="works">
+    <div class="noise"></div>
+    <div class="container">
+      <div class="title-mask">
+        <h2 class="section-title">Избранные работы</h2>
+      </div>
+      <div class="works-grid">
+        
+        <a href="https://alphastatex.github.io/ombre-coffee/" target="_blank" class="work-card hover-work">
+          <div class="work-image-wrapper reveal-image">
+            <img class="work-image" src="/images/ombre.png" alt="Ombre Coffee">
+          </div>
+          <h3>Ombre Coffee</h3>
+          <p>Сайт + CRM + Mini App</p>
+        </a>
+
+        <a href="https://alphastatex.github.io/barbershop/" target="_blank" class="work-card hover-work">
+          <div class="work-image-wrapper reveal-image">
+            <img class="work-image" src="/images/brutal.png" alt="Brutal Style">
+          </div>
+          <h3>Brutal Style</h3>
+          <p>Сайт + CRM + Mini App</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / CONTACT -->
+  <footer class="section-footer grain" id="contact">
+    <div class="noise"></div>
+    
+    <!-- БЛОК: РЕДАКТОР КОДА -->
+    <div class="code-editor-wrapper hover-target">
+      <div class="editor-header">
+        <div class="editor-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="editor-filename">main.js — ALPHASTATES</div>
+      </div>
+      <div class="editor-body" id="editor-body">
+        <span class="code-content" id="code-content"></span><span class="code-cursor"></span>
+      </div>
+    </div>
+    
+    <div class="container footer-content">
+      <h2>Готовы начать?</h2>
+      <p>Давайте создадим что-то невероятное для вашего бизнеса.</p>
+      <a href="https://t.me/ivanchernoshey" target="_blank" class="contact-btn hover-target magnetic">Написать в Telegram</a>
+    </div>
+  </footer>
+
+  <!-- Кнопка НАВЕРХ -->
+  <a href="#" class="scroll-top hover-target magnetic" id="scrollTopBtn">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </a>
+
+  <!-- КНОПКА ЗВУКА -->
+  <button class="sound-toggle hover-target magnetic" id="soundToggle">
+    <!-- Иконка динамика (включен) -->
+    <svg id="soundOnIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+    <!-- Иконка перечеркнутого динамика (выключен) -->
+    <svg id="soundOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+  </button>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
