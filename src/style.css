@@ -3,24 +3,22 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-serif; overflow-x: hidden; cursor: none; }
 
-/* --- СКРОЛЛ ПРОГРЕСС --- */
-.scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background-color: #ff3d00; z-index: 10001; }
+/* --- ЖЕСТКИЙ ФИКС КУРСОРА --- */
+a, button, .nav-link, .btn-case, .btn-live, .modal-close { cursor: none !important; }
 
-/* --- ПРЕЛОАДЕР --- */
+.scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background-color: #ff3d00; z-index: 10001; }
 .preloader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030303; z-index: 10000; display: flex; justify-content: center; align-items: center; }
 .preloader-counter { font-size: 5rem; font-weight: 700; color: #ff3d00; font-family: 'JetBrains Mono', monospace; }
 
-/* --- ШУМ --- */
 .grain { position: relative; }
 .noise { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; opacity: 0.15; mix-blend-mode: overlay; background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); }
 
 /* --- КУРСОР --- */
-.cursor-dot, .cursor-ring, .cursor-text { position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999; }
+.cursor-dot, .cursor-ring, .cursor-text { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100000; }
 .cursor-dot { width: 6px; height: 6px; background-color: #ff3d00; border-radius: 50%; }
 .cursor-ring { width: 40px; height: 40px; background-color: #ffffff; border-radius: 50%; mix-blend-mode: difference; transition: width 0.3s, height 0.3s, opacity 0.3s; }
 .cursor-ring.hovered { width: 80px; height: 80px; }
-.cursor-text { width: 90px; height: 90px; border-radius: 50%; background-color: #fff; color: #000; display: flex; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; opacity: 0; transform: translate(-50%, -50%) scale(0); mix-blend-mode: normal; }
-
+.cursor-text { width: 90px; height: 90px; border-radius: 50%; background-color: #fff; color: #000; display: flex; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1px; opacity: 0; mix-blend-mode: normal; }
 .magnetic { display: inline-block; will-change: transform; }
 
 /* --- ШАПКА --- */
@@ -32,10 +30,9 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
 .btn-contact { border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 30px; }
 .btn-contact:hover { background: #fff; color: #000; border-color: #fff; }
 
-/* --- 3D CANVAS --- */
 #canvas-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
 
-/* --- HERO SECTION --- */
+/* --- HERO --- */
 .content { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
 .content::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(3,3,3,0.85) 0%, rgba(3,3,3,0) 70%); z-index: -1; pointer-events: none; }
 .hero-title { font-size: 7rem; font-weight: 700; letter-spacing: -2px; text-transform: uppercase; display: flex; gap: 20px; overflow: hidden; text-shadow: 0 0 40px rgba(255, 255, 255, 0.1); font-family: 'Unbounded', sans-serif; }
@@ -46,12 +43,12 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
 .hint { margin-top: 50px; font-size: 0.9rem; color: #ff3d00; text-transform: uppercase; letter-spacing: 3px; animation: pulse 2s infinite; opacity: 0; font-weight: 700; text-shadow: 0 0 20px rgba(255, 61, 0, 0.8), 0 2px 5px rgba(0,0,0,1); font-family: 'JetBrains Mono', monospace; }
 @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 
-/* --- ОБЩИЕ СТИЛИ --- */
+/* --- ОБЩИЕ --- */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
 .title-mask { overflow: hidden; margin-bottom: 60px; }
 .section-title { font-size: 3rem; font-weight: 700; letter-spacing: -1px; font-family: 'Unbounded', sans-serif; transform: translateY(100%); }
 
-/* --- ABOUT SECTION (СВЕТЛАЯ) --- */
+/* --- ABOUT --- */
 .section-about { position: relative; z-index: 2; min-height: 100vh; background-color: #f4f4f0; color: #111110; display: flex; flex-direction: column; justify-content: center; padding: 160px 0 120px 0; border-top: 1px solid #222; overflow: hidden; }
 .about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 80px; align-items: center; }
 .about-image-wrapper { width: 100%; aspect-ratio: 3/4; border-radius: 12px; overflow: hidden; position: relative; }
@@ -66,7 +63,7 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
 .skills span { padding: 10px 20px; border: 1px solid #ccc; border-radius: 30px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #444; transition: all 0.3s; }
 .skills span:hover { background: #111; border-color: #111; color: #fff; }
 
-/* --- SERVICES (ТЕМНАЯ) --- */
+/* --- SERVICES --- */
 .section-2 { position: relative; z-index: 2; min-height: 100vh; background-color: #0a0a0a; display: flex; flex-direction: column; justify-content: center; padding: 100px 0; border-top: 1px solid #222; overflow: hidden; }
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 .service-card { background: #111; padding: 40px; border-radius: 12px; border: 1px solid #222; transition: transform 0.4s ease, border-color 0.4s ease; position: relative; overflow: hidden; opacity: 0; transform: translateY(50px); }
@@ -76,21 +73,85 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
 .service-card h3 { font-size: 1.5rem; margin-bottom: 15px; font-weight: 700; font-family: 'Unbounded', sans-serif; }
 .service-card p { color: #888; font-size: 1rem; line-height: 1.6; font-weight: 300; }
 
-/* --- PORTFOLIO --- */
-.section-3 { position: relative; z-index: 2; min-height: 100vh; background-color: #050505; display: flex; flex-direction: column; justify-content: center; padding: 100px 0; border-top: 1px solid #222; overflow: hidden; }
-.works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; }
-.work-card { cursor: none; opacity: 0; transform: translateY(50px); text-decoration: none; color: inherit; display: block; outline: none; }
-.work-image-wrapper { width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: 20px; overflow: hidden; clip-path: inset(0 0 100% 0); position: relative; background-color: #111; }
-.work-image { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
-.work-card:hover .work-image { transform: scale(1.1); }
-.work-card h3 { font-size: 1.5rem; font-weight: 700; font-family: 'Unbounded', sans-serif; transition: color 0.3s; }
-.work-card p { color: #888; font-size: 0.9rem; margin-top: 5px; font-weight: 300; }
-.work-card:hover h3 { color: #ff3d00; }
+/* --- PORTFOLIO (DRAG & SNAP) --- */
+.section-3 { position: relative; z-index: 2; height: 100vh; background-color: #050505; border-top: 1px solid #222; display: flex; flex-direction: column; justify-content: center; overflow: hidden; cursor: none !important; }
+
+.works-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: none !important; /* Жестко запрещаем руку */
+}
+.works-wrapper::-webkit-scrollbar { display: none; }
+
+.works-container { 
+  display: flex; 
+  gap: 10vw; 
+  padding: 10vh max(20px, calc(50vw - 450px)); 
+  align-items: center;
+  width: max-content;
+  cursor: none !important;
+}
+
+.work-slide { 
+  width: 60vw; 
+  max-width: 900px; 
+  flex-shrink: 0; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  cursor: none !important;
+}
+
+.work-image-wrapper { width: 100%; aspect-ratio: 16/9; border-radius: 12px; margin-bottom: 20px; overflow: hidden; position: relative; background-color: #111; cursor: none !important; }
+.work-image { 
+  width: 100%; height: 100%; object-fit: cover; object-position: center; 
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); 
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  cursor: none !important;
+}
+.work-slide:hover .work-image { transform: scale(1.05); }
+.work-info h3 { font-size: 2rem; font-weight: 700; font-family: 'Unbounded', sans-serif; color: #fff; }
+.work-info p { color: #888; font-size: 1rem; margin-top: 8px; font-weight: 300; font-family: 'JetBrains Mono', monospace; }
+.work-actions { display: flex; gap: 15px; margin-top: 25px; }
+.btn-case, .btn-live { background: transparent; border: 1px solid #333; color: #fff; padding: 10px 20px; border-radius: 30px; font-family: 'Unbounded', sans-serif; font-size: 0.85rem; cursor: none !important; transition: all 0.3s; text-decoration: none; display: inline-block; }
+.btn-case:hover, .btn-live:hover { background: #ff3d00; border-color: #ff3d00; }
+
+/* --- СТРЕЛКИ --- */
+.works-nav { 
+  position: absolute; 
+  bottom: 30px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  display: flex; 
+  gap: 15px; 
+  z-index: 10; 
+}
+.nav-arrow { width: 50px; height: 50px; border-radius: 50%; background: transparent; border: 1px solid #333; color: #fff; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: none !important; transition: all 0.3s; }
+.nav-arrow:hover { background: #fff; color: #000; border-color: #fff; }
+
+/* --- МОДАЛКА --- */
+.project-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,5,5,0.95); backdrop-filter: blur(10px); z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; cursor: none !important; }
+.project-modal.active { opacity: 1; pointer-events: auto; }
+.modal-close { position: absolute; top: 40px; right: 50px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1rem; cursor: none !important; z-index: 10; }
+.modal-close:hover { color: #ff3d00; }
+.modal-content { width: 90%; max-width: 1200px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; transform: translateY(30px); transition: transform 0.4s ease; cursor: none !important; }
+.project-modal.active .modal-content { transform: translateY(0); }
+.modal-text h2 { font-size: 3rem; font-family: 'Unbounded', sans-serif; margin-bottom: 20px; line-height: 1.1; }
+.modal-text p { font-size: 1.1rem; color: #aaa; line-height: 1.6; margin-bottom: 30px; font-weight: 300; }
+.modal-stack { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+.modal-stack li { padding: 8px 16px; border: 1px solid #333; border-radius: 30px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #888; }
+.modal-image-wrapper { width: 100%; border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; background: #111; }
+.modal-image-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* --- FOOTER --- */
 .section-footer { position: relative; z-index: 2; background-color: #0a0a0a; border-top: 1px solid #222; overflow: hidden; }
-
-/* --- РЕДАКТОР КОДА --- */
 .code-editor-wrapper { width: 100%; background-color: #0d0d0d; border-top: 1px solid #222; border-bottom: 1px solid #222; font-family: 'JetBrains Mono', monospace; clip-path: inset(0 100% 0 0); }
 .editor-header { display: flex; align-items: center; padding: 12px 20px; background-color: #151515; border-bottom: 1px solid #222; }
 .editor-dots { display: flex; gap: 8px; margin-right: 20px; }
@@ -100,40 +161,52 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
 .dot.green { background-color: #27c93f; }
 .editor-filename { color: #888; font-size: 0.85rem; letter-spacing: 1px; }
 .editor-body { padding: 30px 20px; font-size: 1.2rem; color: #a9b7c6; white-space: nowrap; overflow-x: hidden; display: flex; align-items: center; }
-.code-content { display: inline-block; }
+.code-content { display: inline-block; font-family: 'JetBrains Mono', monospace; }
+
+/* Подсветка синтаксиса */
+.token.keyword { color: #c678dd; }
+.token.string { color: #98c379; }
+.token.comment { color: #5c6370; font-style: italic; }
+.token.class-name { color: #e5c07b; }
+.token.number { color: #d19a66; }
+.token.function { color: #61afef; }
+
 .code-cursor { display: inline-block; width: 10px; height: 1.2rem; background-color: #ff3d00; margin-left: 5px; animation: blink 0.8s step-end infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
 .footer-content { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
 .section-footer h2 { font-size: 4rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -2px; font-family: 'Unbounded', sans-serif; }
 .section-footer p { color: #888; font-size: 1.2rem; margin-bottom: 40px; font-weight: 300; }
-.contact-btn { display: inline-block; padding: 20px 40px; background: #fff; color: #000; text-decoration: none; font-weight: 700; border-radius: 40px; font-size: 1.1rem; transition: all 0.3s; font-family: 'Unbounded', sans-serif; }
+.contact-btn { display: inline-block; padding: 20px 40px; background: #fff; color: #000; text-decoration: none; font-weight: 700; border-radius: 40px; font-size: 1.1rem; transition: all 0.3s; font-family: 'Unbounded', sans-serif; cursor: none !important; }
 .contact-btn:hover { background: #ff3d00; color: #fff; transform: scale(1.05); }
 
-/* --- КНОПКИ УПРАВЛЕНИЯ (НАВЕРХ И ЗВУК) --- */
-.scroll-top {
-  position: fixed; bottom: 40px; right: 40px; width: 60px; height: 60px;
-  background-color: #111; border: 1px solid #333; border-radius: 50%;
-  display: flex; justify-content: center; align-items: center; color: #fff;
-  z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; text-decoration: none;
+/* --- КНОПКИ УПРАВЛЕНИЯ --- */
+.scroll-top { 
+  position: fixed; bottom: 40px; right: 40px; width: 60px; height: 60px; 
+  background-color: #111; border: 1px solid #333; border-radius: 50%; 
+  display: flex; justify-content: center; align-items: center; color: #fff; 
+  z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; text-decoration: none; cursor: none !important;
 }
 .scroll-top.visible { opacity: 1; visibility: visible; }
 .scroll-top:hover { background-color: #ff3d00; border-color: #ff3d00; color: #fff; }
 
-.sound-toggle {
-  position: fixed; bottom: 40px; right: 115px; width: 50px; height: 50px;
-  background-color: transparent; border: 1px solid #333; border-radius: 50%;
-  display: flex; justify-content: center; align-items: center; color: #888;
-  z-index: 1000; cursor: pointer; transition: all 0.3s ease;
+.sound-toggle { 
+  position: fixed; bottom: 115px; right: 45px; width: 50px; height: 50px; 
+  background-color: transparent; border: 1px solid #333; border-radius: 50%; 
+  display: flex; justify-content: center; align-items: center; color: #888; 
+  z-index: 1000; cursor: none !important; transition: all 0.3s ease; 
 }
 .sound-toggle:hover { border-color: #ff3d00; color: #ff3d00; }
 
 /* =========================================
-   АДАПТИВ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+   АДАПТИВ
    ========================================= */
 @media (max-width: 900px) {
   .cursor-dot, .cursor-ring, .cursor-text { display: none !important; }
-  body { cursor: auto; }
+  
+  /* ВОЗВРАЩАЕМ КУРСОР НА МОБИЛКАХ */
+  body, a, button, .nav-link, .btn-case, .btn-live, .modal-close, .section-3, .works-wrapper, .works-container, .work-slide, .work-image-wrapper, .nav-arrow, .project-modal, .modal-content, .scroll-top, .sound-toggle, .contact-btn { 
+    cursor: auto !important; 
+  }
   
   .nav { padding: 15px 20px; }
   .logo { font-size: 1.2rem; }
@@ -155,7 +228,20 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
   
   .section-title { font-size: 2rem; }
   .service-card { padding: 30px 20px; }
-  .works-grid { grid-template-columns: 1fr; gap: 30px; }
+  
+  /* Мобильный слайдер */
+  .section-3 { height: auto; padding: 100px 0; display: block; }
+  .works-wrapper { overflow: visible; user-select: auto; }
+  .works-container { flex-direction: column; gap: 60px; padding: 0 20px; width: 100%; }
+  .work-slide { width: 100%; max-width: 100%; }
+  .work-info h3 { font-size: 1.8rem; }
+  .works-nav { display: none; }
+  
+  /* Мобильная модалка */
+  .project-modal { align-items: flex-start; padding-top: 80px; overflow-y: auto; }
+  .modal-close { top: 20px; right: 20px; }
+  .modal-content { grid-template-columns: 1fr; gap: 30px; width: 90%; }
+  .modal-text h2 { font-size: 2rem; }
   
   .editor-body { font-size: 0.9rem; padding: 20px 10px; }
   .editor-filename { font-size: 0.75rem; }
@@ -164,7 +250,7 @@ body { background-color: #030303; color: #ffffff; font-family: 'Onest', sans-ser
   .contact-btn { padding: 15px 30px; font-size: 1rem; }
   
   .scroll-top { bottom: 20px; right: 20px; width: 50px; height: 50px; }
-  .sound-toggle { bottom: 20px; right: 85px; width: 45px; height: 45px; }
+  .sound-toggle { bottom: 80px; right: 23px; width: 45px; height: 45px; }
 }
 
 @media (max-width: 480px) {

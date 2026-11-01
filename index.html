@@ -5,22 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ALPHASTATES — Digital Solutions</title>
   
-  <!-- Встроенный SVG-фавикон (черный фон, оранжевая A) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23030303'/%3E%3Ctext x='50' y='75' font-size='80' font-family='Arial, sans-serif' font-weight='bold' fill='%23ff3d00' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
 
-  <!-- OPEN GRAPH МЕТА-ТЕГИ (Для красивых превью в Telegram) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ALPHASTATES — Digital Solutions" />
   <meta property="og:description" content="Создаю цифровые продукты, которые не стыдно показать. Сайты с характером, Telegram Mini Apps и 3D." />
-  <!-- ВАЖНО: Замени ссылку на свою после деплоя, если нужно -->
   <meta property="og:image" content="https://alphastatex.github.io/alpha-3d/images/og-cover.png" /> 
   
-  <!-- Twitter Meta (для красивых карточек) -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ALPHASTATES — Digital Solutions" />
-  <meta name="twitter:description" content="Сайты с характером, Telegram Mini Apps и 3D." />
-  <meta name="twitter:image" content="https://alphastatex.github.io/alpha-3d/images/og-cover.png" />
-
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
@@ -60,12 +51,11 @@
     <span class="hint">Кликни в любом месте</span>
   </div>
 
-  <!-- ABOUT SECTION (СВЕТЛАЯ) -->
+  <!-- ABOUT SECTION -->
   <section class="section-about grain" id="about">
     <div class="noise"></div>
     <div class="container about-grid">
       <div class="about-image-wrapper hover-target">
-        <!-- Замени путь на свой, если файл называется иначе -->
         <img class="about-image" src="/images/me.png" alt="Иван">
       </div>
       <div class="about-text">
@@ -113,37 +103,84 @@
   <!-- PORTFOLIO SECTION -->
   <section class="section-3 grain" id="works">
     <div class="noise"></div>
-    <div class="container">
-      <div class="title-mask">
-        <h2 class="section-title">Избранные работы</h2>
-      </div>
-      <div class="works-grid">
+    
+    <div class="works-wrapper" id="worksWrapper">
+      <div class="works-container" id="worksContainer">
         
-        <a href="https://alphastatex.github.io/ombre-coffee/" target="_blank" class="work-card hover-work">
-          <div class="work-image-wrapper reveal-image">
+        <!-- Slide 1 -->
+        <div class="work-slide" data-project="ombre">
+          <div class="work-image-wrapper hover-work">
             <img class="work-image" src="/images/ombre.png" alt="Ombre Coffee">
           </div>
-          <h3>Ombre Coffee</h3>
-          <p>Сайт + CRM + Mini App</p>
-        </a>
+          <div class="work-info">
+            <h3>Ombre Coffee</h3>
+            <p>Сайт + CRM + Mini App</p>
+            <div class="work-actions">
+              <button class="btn-case magnetic" data-project="ombre">Смотреть кейс</button>
+              <a href="https://alphastatex.github.io/ombre-coffee/" target="_blank" class="btn-live magnetic">Live Demo ↗</a>
+            </div>
+          </div>
+        </div>
 
-        <a href="https://alphastatex.github.io/barbershop/" target="_blank" class="work-card hover-work">
-          <div class="work-image-wrapper reveal-image">
+        <!-- Slide 2 -->
+        <div class="work-slide" data-project="brutal">
+          <div class="work-image-wrapper hover-work">
             <img class="work-image" src="/images/brutal.png" alt="Brutal Style">
           </div>
-          <h3>Brutal Style</h3>
-          <p>Сайт + CRM + Mini App</p>
-        </a>
+          <div class="work-info">
+            <h3>Brutal Style</h3>
+            <p>Сайт + CRM + Mini App</p>
+            <div class="work-actions">
+              <button class="btn-case magnetic" data-project="brutal">Смотреть кейс</button>
+              <a href="https://alphastatex.github.io/barbershop/" target="_blank" class="btn-live magnetic">Live Demo ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="work-slide" data-project="neon">
+          <div class="work-image-wrapper hover-work">
+            <img class="work-image" src="/images/neon-arena-hero.png" alt="Neon Arena">
+          </div>
+          <div class="work-info">
+            <h3>Neon Arena</h3>
+            <p>Киберспорт · Vite + Vanilla JS</p>
+            <div class="work-actions">
+              <button class="btn-case magnetic" data-project="neon">Смотреть кейс</button>
+              <a href="https://alphastatex.github.io/neon-arena/" target="_blank" class="btn-live magnetic">Live Demo ↗</a>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>
+
+    <!-- Стрелки навигации -->
+    <div class="works-nav">
+      <button class="nav-arrow prev-btn hover-target" id="prevBtn">←</button>
+      <button class="nav-arrow next-btn hover-target" id="nextBtn">→</button>
+    </div>
   </section>
+
+  <!-- МОДАЛЬНОЕ ОКНО -->
+  <div class="project-modal" id="projectModal">
+    <button class="modal-close hover-target" id="modalClose">Закрыть ✕</button>
+    <div class="modal-content">
+      <div class="modal-text">
+        <h2 id="modalTitle">Название проекта</h2>
+        <p id="modalDesc">Описание проекта.</p>
+        <ul id="modalStack" class="modal-stack"></ul>
+        <a href="#" id="modalLink" target="_blank" class="btn-live magnetic">Открыть сайт ↗</a>
+      </div>
+      <div class="modal-image-wrapper">
+        <img id="modalImage" src="" alt="Project Preview">
+      </div>
+    </div>
+  </div>
 
   <!-- FOOTER / CONTACT -->
   <footer class="section-footer grain" id="contact">
     <div class="noise"></div>
-    
-    <!-- БЛОК: РЕДАКТОР КОДА -->
     <div class="code-editor-wrapper hover-target">
       <div class="editor-header">
         <div class="editor-dots">
@@ -154,7 +191,7 @@
         <div class="editor-filename">main.js — ALPHASTATES</div>
       </div>
       <div class="editor-body" id="editor-body">
-        <span class="code-content" id="code-content"></span><span class="code-cursor"></span>
+        <code class="code-content" id="code-content"></code><span class="code-cursor"></span>
       </div>
     </div>
     
@@ -165,16 +202,12 @@
     </div>
   </footer>
 
-  <!-- Кнопка НАВЕРХ -->
   <a href="#" class="scroll-top hover-target magnetic" id="scrollTopBtn">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </a>
 
-  <!-- КНОПКА ЗВУКА -->
   <button class="sound-toggle hover-target magnetic" id="soundToggle">
-    <!-- Иконка динамика (включен) -->
     <svg id="soundOnIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-    <!-- Иконка перечеркнутого динамика (выключен) -->
     <svg id="soundOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
   </button>
 

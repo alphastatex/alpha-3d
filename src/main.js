@@ -22,8 +22,9 @@ gsap.ticker.lagSmoothing(0);
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
-    e.preventDefault();
     const target = this.getAttribute('href');
+    if (!target || target === '#' || !target.startsWith('#')) return; 
+    e.preventDefault();
     lenis.scrollTo(target, { offset: 0, duration: 1.5 });
   });
 });
@@ -58,13 +59,14 @@ preloaderTl.to({ value: 0 }, {
 
 setTimeout(() => { document.querySelector('.hint').style.animation = 'pulse 2s infinite'; }, 3500);
 
-
 // --- КАСТОМНЫЙ КУРСОР ---
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorRing = document.querySelector('.cursor-ring');
 const cursorText = document.querySelector('.cursor-text');
 const hoverTargets = document.querySelectorAll('.hover-target, a, button');
 const workCards = document.querySelectorAll('.hover-work');
+
+gsap.set([cursorDot, cursorRing, cursorText], { xPercent: -50, yPercent: -50 });
 
 const xToDot = gsap.quickTo(cursorDot, "x", {duration: 0.1, ease: "power3"});
 const yToDot = gsap.quickTo(cursorDot, "y", {duration: 0.1, ease: "power3"});
@@ -110,12 +112,10 @@ magneticElements.forEach((el) => {
   el.addEventListener("mouseleave", () => { xTo(0); yTo(0); });
 });
 
-
 // --- THREE.JS ---
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-
 const isMobile = window.innerWidth < 768;
 camera.position.z = isMobile ? 11 : 5;
 
@@ -166,7 +166,6 @@ const composer = new EffectComposer(renderer);
 composer.addPass(renderScene);
 composer.addPass(bloomPass);
 
-// --- ВЗРЫВ ОТ КЛИКА ---
 let clickExplodeProgress = 0;
 const explosionOffsets = new Float32Array(count * 3);
 for (let i = 0; i < count * 3; i++) { explosionOffsets[i] = (Math.random() - 0.5) * 10; }
@@ -178,14 +177,12 @@ window.addEventListener('click', () => {
   });
 });
 
-// --- ВЗРЫВ ОТ СКРОЛЛА ---
 let scrollExplodeProgress = 0;
 ScrollTrigger.create({
   trigger: ".content", start: "top top", end: "bottom top", scrub: 1.5,
   onUpdate: (self) => { scrollExplodeProgress = self.progress * 3.5; }
 });
 
-// --- МЫШЬ ---
 let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
 let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
@@ -197,25 +194,208 @@ window.addEventListener('mousemove', (event) => {
   }
 });
 
-// --- СКРОЛЛ АНИМАЦИИ ---
+// --- БАЗОВЫЕ АНИМАЦИИ ---
 gsap.to(".content", { opacity: 0, scrollTrigger: { trigger: ".section-2", start: "top bottom", end: "top center", scrub: 1 } });
 gsap.to(".service-card", { y: 0, opacity: 1, duration: 1, stagger: 0.2, scrollTrigger: { trigger: ".services-grid", start: "top 85%", toggleActions: "play none none none" } });
-gsap.to(".work-card", { y: 0, opacity: 1, duration: 1, stagger: 0.2, scrollTrigger: { trigger: ".works-grid", start: "top 85%", toggleActions: "play none none none" } });
 gsap.to(".section-title", { y: 0, duration: 1.2, ease: "power4.out", stagger: 0.2, scrollTrigger: { trigger: ".title-mask", start: "top 85%", toggleActions: "play none none none" } });
-
-gsap.utils.toArray('.work-image-wrapper').forEach(wrapper => {
-  gsap.to(wrapper, { clipPath: "inset(0 0 0% 0)", duration: 1.5, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none none" } });
-});
-
-gsap.utils.toArray('.work-image').forEach(image => {
-  gsap.to(image, { y: 40, ease: "none", scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: true } });
-});
-
 gsap.to(".about-text p", { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: ".section-about", start: "top 70%", toggleActions: "play none none none" } });
 gsap.from(".about-title", { y: 50, opacity: 0, duration: 1.2, ease: "power4.out", scrollTrigger: { trigger: ".section-about", start: "top 70%", toggleActions: "play none none none" } });
 gsap.from(".about-image-wrapper", { clipPath: "inset(100% 0 0 0)", duration: 1.5, ease: "power4.inOut", scrollTrigger: { trigger: ".section-about", start: "top 70%", toggleActions: "play none none none" } });
 
-// --- МАГИЯ РЕДАКТОРА КОДА (СО ЗВУКОМ) ---
+// --- ЛОГИКА ПОРТФОЛИО (DRAG & SNAP & ARROWS) ---
+const worksWrapper = document.getElementById('worksWrapper');
+const slides = document.querySelectorAll('.work-slide');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+let currentIndex = 0;
+let isDragging = false;
+let startX;
+let scrollLeft;
+let lastX;
+let velocity = 0;
+let animation = null; 
+
+document.querySelectorAll('img').forEach(img => img.addEventListener('dragstart', e => e.preventDefault()));
+
+gsap.from(".work-slide", {
+  y: 100, opacity: 0, duration: 1, stagger: 0.2,
+  scrollTrigger: { trigger: ".section-3", start: "top 80%", toggleActions: "play none none none" }
+});
+
+if (window.innerWidth > 900) {
+  worksWrapper.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    isDragging = false;
+    worksWrapper.classList.add('active');
+    startX = e.pageX - worksWrapper.offsetLeft;
+    scrollLeft = worksWrapper.scrollLeft;
+    lastX = e.pageX;
+    velocity = 0;
+    if (animation) animation.kill();
+  });
+
+  worksWrapper.addEventListener('mouseleave', () => {
+    if (worksWrapper.classList.contains('active')) {
+      worksWrapper.classList.remove('active');
+      snapToNearest();
+    }
+  });
+
+  worksWrapper.addEventListener('mouseup', () => {
+    if (worksWrapper.classList.contains('active')) {
+      worksWrapper.classList.remove('active');
+      snapToNearest();
+    }
+  });
+
+  worksWrapper.addEventListener('mousemove', (e) => {
+    if (!worksWrapper.classList.contains('active')) return;
+    e.preventDefault();
+    const x = e.pageX - worksWrapper.offsetLeft;
+    const walk = (x - startX) * 2;
+    
+    if (Math.abs(walk) > 10) isDragging = true;
+    worksWrapper.scrollLeft = scrollLeft - walk;
+
+    velocity = e.pageX - lastX;
+    lastX = e.pageX;
+  });
+}
+
+function snapToNearest() {
+  const centerPos = worksWrapper.scrollLeft + worksWrapper.offsetWidth / 2;
+  let closestIndex = 0;
+  let minDistance = Infinity;
+
+  slides.forEach((slide, i) => {
+    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+    const distance = Math.abs(centerPos - slideCenter);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestIndex = i;
+    }
+  });
+
+  if (Math.abs(velocity) > 15) {
+    if (velocity < 0 && closestIndex < slides.length - 1) closestIndex++;
+    if (velocity > 0 && closestIndex > 0) closestIndex--;
+  }
+
+  scrollToSlide(closestIndex);
+}
+
+function scrollToSlide(index) {
+  if (index < 0) index = 0;
+  if (index >= slides.length) index = slides.length - 1;
+  currentIndex = index;
+
+  const slide = slides[index];
+  const scrollTarget = slide.offsetLeft - (worksWrapper.offsetWidth / 2) + (slide.offsetWidth / 2);
+
+  if (animation) animation.kill();
+
+  animation = gsap.to(worksWrapper, {
+    scrollLeft: scrollTarget,
+    duration: 0.8,
+    ease: "power3.out"
+  });
+}
+
+nextBtn.addEventListener('click', () => scrollToSlide(currentIndex + 1));
+prevBtn.addEventListener('click', () => scrollToSlide(currentIndex - 1));
+
+worksWrapper.addEventListener('scroll', () => {
+  if (isDragging) return;
+  const centerPos = worksWrapper.scrollLeft + worksWrapper.offsetWidth / 2;
+  slides.forEach((slide, i) => {
+    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+    if (Math.abs(centerPos - slideCenter) < slide.offsetWidth / 2) {
+      currentIndex = i;
+    }
+  });
+});
+
+// --- КЛИК ПО КАРТИНКЕ ---
+const workImages = document.querySelectorAll('.work-image-wrapper');
+workImages.forEach(img => {
+  img.addEventListener('click', () => {
+    if (isDragging) return; 
+    const projectId = img.closest('.work-slide').getAttribute('data-project');
+    openModal(projectId);
+  });
+});
+
+// --- МОДАЛЬНОЕ ОКНО ---
+const base = import.meta.env.BASE_URL;
+
+const projectData = {
+  ombre: {
+    title: "Ombre Coffee",
+    desc: "Полноценная система бронирования для кофейни с Telegram-ботом и защищённой CRM-админкой (Zero Trust).",
+    stack: ["Vanilla JS", "Cloudflare Workers", "Turnstile", "Telegram API"],
+    link: "https://alphastatex.github.io/ombre-coffee/",
+    image: `${base}images/ombre.png`
+  },
+  brutal: {
+    title: "Brutal Style",
+    desc: "Бруталистичный лендинг с 12 мастерами, Telegram Mini App и защитой форм от спама.",
+    stack: ["HTML/CSS", "Vanilla JS", "Cloudflare Workers", "Telegram API"],
+    link: "https://alphastatex.github.io/barbershop/",
+    image: `${base}images/brutal.png`
+  },
+  neon: {
+    title: "Neon Arena",
+    desc: "Продающий лендинг киберспортивного клуба. Премиум-интерактив на Vite + Vanilla JS: Canvas 2D частицы, Web Audio API, кастомный курсор.",
+    stack: ["Vite", "Vanilla JS", "GSAP", "Canvas 2D", "Web Audio API"],
+    link: "https://alphastatex.github.io/neon-arena/",
+    image: `${base}images/neon-arena-hero.png`
+  }
+};
+
+const modal = document.getElementById('projectModal');
+const modalClose = document.getElementById('modalClose');
+const btnsCase = document.querySelectorAll('.btn-case');
+
+function openModal(id) {
+  const data = projectData[id];
+  if (!data) return;
+
+  document.getElementById('modalTitle').textContent = data.title;
+  document.getElementById('modalDesc').textContent = data.desc;
+  document.getElementById('modalLink').href = data.link;
+  document.getElementById('modalImage').src = data.image;
+  
+  const stackUl = document.getElementById('modalStack');
+  stackUl.innerHTML = '';
+  data.stack.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    stackUl.appendChild(li);
+  });
+
+  modal.classList.add('active');
+  lenis.stop();
+}
+
+btnsCase.forEach(btn => {
+  btn.addEventListener('click', () => {
+    openModal(btn.getAttribute('data-project'));
+  });
+});
+
+modalClose.addEventListener('click', () => {
+  modal.classList.remove('active');
+  lenis.start();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('active')) {
+    modal.classList.remove('active');
+    lenis.start();
+  }
+});
+
+// --- МАГИЯ РЕДАКТОРА КОДА (С ПОДСВЕТКОЙ И НЕРОВНЫМ РИТМОМ) ---
 const codeToType = "import * as THREE from 'three'; // Создаем сцену... const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100); camera.position.z = 5; // Рендерим... const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight); container.appendChild(renderer.domElement); // Анимация... function animate() { requestAnimationFrame(animate); composer.render(); }";
 const codeContent = document.getElementById('code-content');
 const editorBody = document.getElementById('editor-body');
@@ -223,7 +403,6 @@ let charIndex = 0;
 let isDeleting = false;
 let isTypingStarted = false;
 
-// --- ЗВУК ПЕЧАТНОЙ МАШИНКИ (СНИЖЕННАЯ ЧАСТОТА) ---
 let audioCtx;
 let isMuted = false; 
 let noiseBuffer;
@@ -232,80 +411,90 @@ let masterFilter;
 window.addEventListener('click', () => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
     const bufferSize = audioCtx.sampleRate * 0.02; 
     noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-
+    for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+    
     masterFilter = audioCtx.createBiquadFilter();
-    masterFilter.type = 'lowpass';
-    masterFilter.frequency.value = 1800; 
+    masterFilter.type = 'highpass';
+    masterFilter.frequency.value = 1200; 
     masterFilter.connect(audioCtx.destination);
   }
 }, { once: true });
 
+// ЗВУК ПЕЧАТИ (ТИШЕ, ЧАСТОТЫ РАЗНЫЕ)
 function playClickSound() {
   if (isMuted || !audioCtx || audioCtx.state === 'suspended' || !noiseBuffer) return;
-  
   const now = audioCtx.currentTime;
 
+  // 1. Шум (пластик). Добавили рандомный фильтр для "сухости/мягкости"
   const noiseNode = audioCtx.createBufferSource();
   noiseNode.buffer = noiseBuffer;
+  
+  const noiseGain = audioCtx.createGain(); 
+  const clickVol = 0.005 + Math.random() * 0.01; // Стало тише
+  noiseGain.gain.setValueAtTime(clickVol, now); 
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015); 
 
   const noiseFilter = audioCtx.createBiquadFilter();
-  noiseFilter.type = 'bandpass'; 
-  noiseFilter.frequency.value = 800 + Math.random() * 200; 
-
-  const noiseGain = audioCtx.createGain();
-  noiseGain.gain.setValueAtTime(0.02, now); 
-  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02); 
-
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.value = 1500 + Math.random() * 2500; // Разный шум
+  noiseFilter.Q.value = 1.5;
+  
   noiseNode.connect(noiseFilter);
   noiseFilter.connect(noiseGain);
   noiseGain.connect(masterFilter);
   noiseNode.start(now);
 
-  const osc = audioCtx.createOscillator();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(90 + Math.random() * 20, now); 
-  osc.frequency.exponentialRampToValueAtTime(40, now + 0.04);
-
-  const oscGain = audioCtx.createGain();
-  oscGain.gain.setValueAtTime(0.02, now); 
+  // 2. Резкий тон (механика). Сделали разброс частот больше (60-140 Гц)
+  const osc = audioCtx.createOscillator(); 
+  osc.type = 'triangle'; 
+  
+  const baseFreq = 60 + Math.random() * 80; 
+  osc.frequency.setValueAtTime(baseFreq, now); 
+  osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.6, now + 0.04);
+  
+  const oscGain = audioCtx.createGain(); 
+  const toneVol = 0.005 + Math.random() * 0.015; // Рандомная громкость (сильнее/слабее нажатие)
+  oscGain.gain.setValueAtTime(toneVol, now); 
   oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-
+  
   osc.connect(oscGain);
-  oscGain.connect(masterFilter);
+  oscGain.connect(audioCtx.destination); 
   osc.start(now);
   osc.stop(now + 0.04);
 }
 
-// --- ЛОГИКА КНОПКИ MUTE ---
-const soundToggle = document.getElementById('soundToggle');
-const soundOnIcon = document.getElementById('soundOnIcon');
-const soundOffIcon = document.getElementById('soundOffIcon');
+// УЛУЧШЕННАЯ ПОДСВЕТКА (С ЗАГЛУШКАМИ, БЕЗ ВЫЛЕЗАЮЩЕГО HTML)
+function syntaxHighlight(code) {
+  // Экранируем HTML
+  let text = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  
+  // 1. Вырезаем комментарии
+  text = text.replace(/(\/\/.*)/g, '___COMMENT_START___$1___COMMENT_END___');
+  
+  // 2. Строки (закрываем даже если кавычка не закрыта до конца)
+  text = text.replace(/(['"`])(.*?)(\1|$)/gm, '___STRING_START___$1$2$3___STRING_END___');
+  
+  // 3. Ключевые слова
+  text = text.replace(/\b(import|from|const|let|var|function|return|new|class|extends)\b/g, '___KEYWORD_START___$1___KEYWORD_END___');
+  
+  // 4. Классы (THREE, Scene)
+  text = text.replace(/\b([A-Z][a-zA-Z0-9_]*)\b/g, '___CLASS_START___$1___CLASS_END___');
+  
+  // 5. Цифры
+  text = text.replace(/\b(\d+)\b/g, '___NUMBER_START___$1___NUMBER_END___');
 
-soundToggle.addEventListener('click', (e) => {
-  e.preventDefault();
-  isMuted = !isMuted;
+  // В самом конце меняем заглушки на реальные HTML-теги
+  text = text.replace(/___COMMENT_START___/g, '<span class="token comment">').replace(/___COMMENT_END___/g, '</span>');
+  text = text.replace(/___STRING_START___/g, '<span class="token string">').replace(/___STRING_END___/g, '</span>');
+  text = text.replace(/___KEYWORD_START___/g, '<span class="token keyword">').replace(/___KEYWORD_END___/g, '</span>');
+  text = text.replace(/___CLASS_START___/g, '<span class="token class-name">').replace(/___CLASS_END___/g, '</span>');
+  text = text.replace(/___NUMBER_START___/g, '<span class="token number">').replace(/___NUMBER_END___/g, '</span>');
 
-  if (isMuted) {
-    soundOnIcon.style.display = 'none';
-    soundOffIcon.style.display = 'block';
-    soundToggle.style.color = '#ff3d00';
-  } else {
-    soundOnIcon.style.display = 'block';
-    soundOffIcon.style.display = 'none';
-    soundToggle.style.color = '#888';
-    
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  }
-});
+  return text;
+}
 
 ScrollTrigger.create({
   trigger: ".code-editor-wrapper", start: "top 90%", once: true,
@@ -314,26 +503,58 @@ ScrollTrigger.create({
   }
 });
 
+// ЛОГИКА ПЕЧАТИ
 function typeCode() {
   if (!isTypingStarted) return;
+  
   const currentString = codeToType.substring(0, charIndex);
-  codeContent.textContent = currentString;
-  editorBody.scrollLeft = editorBody.scrollWidth;
+  const currentChar = codeToType[charIndex - 1];
+  
+  codeContent.innerHTML = syntaxHighlight(currentString);
+  
+  // Скролл без GSAP (без микро-фризов)
+  if (editorBody.scrollWidth > editorBody.offsetWidth) {
+    editorBody.scrollLeft = editorBody.scrollWidth;
+  }
 
   if (!isDeleting && charIndex < codeToType.length) {
     charIndex++;
     playClickSound(); 
-    if (charIndex >= 300 || charIndex === codeToType.length) { isDeleting = true; setTimeout(typeCode, 1500); return; }
-    setTimeout(typeCode, 40);
+    
+    let delay = 70 + Math.random() * 70; 
+    
+    if (currentChar === ' ') {
+      delay += 50 + Math.random() * 50; 
+    } else if (currentChar === ';' || currentChar === ',') {
+      delay += 150 + Math.random() * 100; 
+    } else if (Math.random() < 0.05) {
+      delay += 200; 
+    }
+
+    if (charIndex >= 300 || charIndex === codeToType.length) { 
+      isDeleting = true; 
+      setTimeout(typeCode, 1500); 
+      return; 
+    }
+    
+    setTimeout(typeCode, delay);
   } 
-  else if (isDeleting && charIndex > 0) { charIndex--; setTimeout(typeCode, 15); } 
-  else if (isDeleting && charIndex === 0) { isDeleting = false; setTimeout(typeCode, 800); } 
-  else { setTimeout(typeCode, 40); }
+  else if (isDeleting && charIndex > 0) { 
+    charIndex--; 
+    setTimeout(typeCode, 15); 
+  } 
+  else if (isDeleting && charIndex === 0) { 
+    isDeleting = false; 
+    setTimeout(typeCode, 800); 
+  } 
+  else { 
+    setTimeout(typeCode, 40); 
+  }
 }
 
 window.addEventListener("load", () => { ScrollTrigger.refresh(); });
 
-// --- РЕНДЕР ---
+// --- РЕНДЕР THREE.JS ---
 const clock = new THREE.Clock();
 const positionAttribute = particlesGeometry.attributes.position;
 
