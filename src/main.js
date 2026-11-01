@@ -408,6 +408,7 @@ let isMuted = false;
 let noiseBuffer;
 let masterFilter; 
 
+// ГЛОБАЛЬНЫЙ КЛИК ДЛЯ ИНИЦИАЛИЗАЦИИ АУДИО
 window.addEventListener('click', () => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -428,18 +429,18 @@ function playClickSound() {
   if (isMuted || !audioCtx || audioCtx.state === 'suspended' || !noiseBuffer) return;
   const now = audioCtx.currentTime;
 
-  // 1. Шум (пластик). Добавили рандомный фильтр для "сухости/мягкости"
+  // 1. Шум (пластик). 
   const noiseNode = audioCtx.createBufferSource();
   noiseNode.buffer = noiseBuffer;
   
   const noiseGain = audioCtx.createGain(); 
-  const clickVol = 0.005 + Math.random() * 0.01; // Стало тише
+  const clickVol = 0.005 + Math.random() * 0.01; 
   noiseGain.gain.setValueAtTime(clickVol, now); 
   noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015); 
 
   const noiseFilter = audioCtx.createBiquadFilter();
   noiseFilter.type = 'bandpass';
-  noiseFilter.frequency.value = 1500 + Math.random() * 2500; // Разный шум
+  noiseFilter.frequency.value = 1500 + Math.random() * 2500; 
   noiseFilter.Q.value = 1.5;
   
   noiseNode.connect(noiseFilter);
@@ -447,7 +448,7 @@ function playClickSound() {
   noiseGain.connect(masterFilter);
   noiseNode.start(now);
 
-  // 2. Резкий тон (механика). Сделали разброс частот больше (60-140 Гц)
+  // 2. Резкий тон (механика). 
   const osc = audioCtx.createOscillator(); 
   osc.type = 'triangle'; 
   
@@ -456,7 +457,7 @@ function playClickSound() {
   osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.6, now + 0.04);
   
   const oscGain = audioCtx.createGain(); 
-  const toneVol = 0.005 + Math.random() * 0.015; // Рандомная громкость (сильнее/слабее нажатие)
+  const toneVol = 0.005 + Math.random() * 0.015; 
   oscGain.gain.setValueAtTime(toneVol, now); 
   oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
   
@@ -466,27 +467,16 @@ function playClickSound() {
   osc.stop(now + 0.04);
 }
 
-// УЛУЧШЕННАЯ ПОДСВЕТКА (С ЗАГЛУШКАМИ, БЕЗ ВЫЛЕЗАЮЩЕГО HTML)
+// УЛУЧШЕННАЯ ПОДСВЕТКА 
 function syntaxHighlight(code) {
-  // Экранируем HTML
   let text = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   
-  // 1. Вырезаем комментарии
   text = text.replace(/(\/\/.*)/g, '___COMMENT_START___$1___COMMENT_END___');
-  
-  // 2. Строки (закрываем даже если кавычка не закрыта до конца)
   text = text.replace(/(['"`])(.*?)(\1|$)/gm, '___STRING_START___$1$2$3___STRING_END___');
-  
-  // 3. Ключевые слова
   text = text.replace(/\b(import|from|const|let|var|function|return|new|class|extends)\b/g, '___KEYWORD_START___$1___KEYWORD_END___');
-  
-  // 4. Классы (THREE, Scene)
   text = text.replace(/\b([A-Z][a-zA-Z0-9_]*)\b/g, '___CLASS_START___$1___CLASS_END___');
-  
-  // 5. Цифры
   text = text.replace(/\b(\d+)\b/g, '___NUMBER_START___$1___NUMBER_END___');
 
-  // В самом конце меняем заглушки на реальные HTML-теги
   text = text.replace(/___COMMENT_START___/g, '<span class="token comment">').replace(/___COMMENT_END___/g, '</span>');
   text = text.replace(/___STRING_START___/g, '<span class="token string">').replace(/___STRING_END___/g, '</span>');
   text = text.replace(/___KEYWORD_START___/g, '<span class="token keyword">').replace(/___KEYWORD_END___/g, '</span>');
@@ -512,7 +502,6 @@ function typeCode() {
   
   codeContent.innerHTML = syntaxHighlight(currentString);
   
-  // Скролл без GSAP (без микро-фризов)
   if (editorBody.scrollWidth > editorBody.offsetWidth) {
     editorBody.scrollLeft = editorBody.scrollWidth;
   }
@@ -551,6 +540,33 @@ function typeCode() {
     setTimeout(typeCode, 40); 
   }
 }
+
+// --- УПРАВЛЕНИЕ ЗВУКОМ (ИСПРАВЛЕНО) ---
+const soundToggle = document.getElementById('soundToggle');
+const soundOnIcon = document.getElementById('soundOnIcon');
+const soundOffIcon = document.getElementById('soundOffIcon');
+
+soundToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation(); // Останавливаем всплытие, чтобы сфера не взрывалась при клике на звук
+  
+  isMuted = !isMuted;
+  
+  if (isMuted) {
+    soundOnIcon.style.display = 'none';
+    soundOffIcon.style.display = 'block';
+    soundToggle.style.color = '#ff3d00';
+  } else {
+    soundOnIcon.style.display = 'block';
+    soundOffIcon.style.display = 'none';
+    soundToggle.style.color = '#888';
+    
+    // Если контекст был создан, но уснул — будим его
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+});
 
 window.addEventListener("load", () => { ScrollTrigger.refresh(); });
 
